@@ -1,0 +1,205 @@
+<html>
+    <head>
+        {{>meta}}
+        <title>weather section</title>
+        <script src="https://kit.fontawesome.com/9d33041dbc.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+
+{{>navbar}}
+
+<div class="container" style="margin-top: 5rem;">
+    <div class="row">
+       <form style="display: flex;flex-direction:column;">
+      <div class="input-group mb-5">
+  <input type="text" class="form-control" autocomplete="off" id="cityname" placeholder="Enter your City Name" aria-label="Recipient's username" aria-describedby="button-addon2">
+  <button class="btn btn-outline-secondary" type="submit" id="submit" value="search">Search</button>
+</div>
+
+<div class="card" style="width: 100%"style="margin-top:4rem;background-color: #6610f2;color:#fff;box-shadow:4px 8px 4px rgba(0,0,0,0.2);">
+  <div class="card-body"style="background-color: #6610f2;color:#fff;">
+   <div class="card-title" style="display: flex;justify-content:space-between;">
+       <h6 id="day">Tuesday</h6>
+       <h6 id ="time">13 oct 2021</h6>
+   </div>
+   <div class="">
+       <p id="cityname1">Get Output here</p>
+       <center><div  class=" data" style="display:flex;justify-content:center;flex-direction:column-reverse;align-item:center;">
+           <p id="temp"style="font-size:5rem;"><span>0</span><sup>o</sup>C</p>
+<p id="tem-status"><i class="fas fa-snowflake" ></i> </p></div></center>
+
+
+
+
+
+
+   </div>
+  </div>
+</div>
+
+       </form>
+    </div>
+</div>
+
+<style>
+    i{
+        font-size: 5rem;
+    }
+    .datah
+    {
+        display: none;
+    }
+    @media(max-width:570px)
+    {
+        .datah{
+            flex-direction: column;
+        }
+    }
+</style>
+
+
+
+
+
+ <script>
+const submitBtn = document.getElementById("submit");
+const cityName = document.getElementById("cityname");
+const cityName1 = document.getElementById("cityname1");
+const temp = document.getElementById("temp");
+const tempStatus = document.getElementById("tem-status");
+const days = document.getElementById("day");
+const time = document.getElementById("time");
+
+const getDay = () =>
+{
+    let weekday = new Array(7);
+    weekday[0]="Sunday";
+      weekday[1]="Monday";
+        weekday[2]="Tuesday";
+        weekday[3]="Wednesday";
+      weekday[4]="Thuresday";
+        weekday[5]="Friday";
+        weekday[6]="Saturday";
+let currentTime = new Date();
+let day = weekday[currentTime.getDay()];
+
+days.innerText=day;
+}
+getDay();
+
+const getCurrentTime = () =>
+{
+    var months = [
+    
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ];
+
+    var now = new Date();
+    var hour = now.getHours();
+    var min = now.getMinutes();
+    var month = months[now.getMonth() +1];
+    var date = now.getDate();
+    var period = "am";
+    if(hour > 11)
+    {
+        period="pm";
+        if(hour > 12) {hour -= 12;}
+    }
+    if(min<10)
+    {
+        min = '0' + min;
+    }
+  time.innerText= `${month} ${date} | ${hour}:${min}${period}`;
+}
+getCurrentTime();
+const getinfo = async(event) =>{
+    event.preventDefault();
+    let cityvalue = cityName.value;
+    if(cityvalue === "")
+    {
+cityName1.innerText=`Plz write the name before Search`;
+
+    }
+    else{
+         try
+         {
+             let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityvalue}&appid=e1f16a2663e63ef3f3c040db9dc39cb6`;
+         const response = await fetch(url);
+         const data = await response.json();
+         console.log(data);
+        
+       
+         const arrdata = [data];
+         
+temp.innerHTML= `${arrdata[0].main.temp} <sup>o</sup>C`;
+
+let a = arrdata[0].weather[0].main;
+console.log(a);
+if(a=="Clouds")
+{
+    tempStatus.innerHTML="<i class='fas fa-cloud'style='color:white;'></i>";
+}
+else if(a=="Clear")
+{
+    tempStatus.innerHTML="<i class='fas fa-sun'style='color:#eccc68;'></i>";
+}
+else if(a=="Rain")
+{
+    tempStatus.innerHTML="<i class='fas fa-cloud-rain'style='color:#a4b0be;'></i>";
+}
+else 
+{
+    tempStatus.innerHTML="<i class='fas fa-sun'style='color:#eccc68;'></i>";
+}
+
+  cityName1.innerText=`${arrdata[0].name}, ${arrdata[0].sys.country}`;
+ 
+
+
+
+
+         }
+         catch
+         {
+            cityName1.innerText=`Plz enter correct city name`; 
+            
+         }
+    }
+
+}
+
+
+submitBtn.addEventListener('click',getinfo);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ </script>
+       
+    
+    </body>
+</html>
